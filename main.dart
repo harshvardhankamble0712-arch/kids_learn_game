@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+      import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() {
@@ -12,17 +12,154 @@ class KidsGameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Math Rush for Kids',
+      title: 'Math Rush',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF1A1A2E),
+        scaffoldBackgroundColor: const Color(0xFF0D0D13), // Ultra Dark Luxury Aesthetic
       ),
-      home: const MathGameScreen(),
+      home: const GameHomeScreen(),
     );
   }
 }
 
+// ---- १. पहिली नवीन वेलकम स्क्रीन (Home Screen) ----
+class GameHomeScreen extends StatelessWidget {
+  const GameHomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF161623), Color(0xFF0D0D13)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // गेमचा लोगो / फोटो ऐवजी कडक डिझाईन आयकॉन
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF1E1E2F),
+                      border: Border.all(color: Colors.amber.shade600, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.amber.withOpacity(0.2),
+                          blurRadius: 20,
+                          spreadRadius: 5,
+                        )
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.calculate_rounded,
+                      size: 80,
+                      color: Colors.amber,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'MATH RUSH',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 4,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'SHARPEN YOUR MIND',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 2,
+                      color: Colors.amber.shade600,
+                    ),
+                  ),
+                ],
+              ),
+
+              // लेव्हल निवडीचे ऑप्शन्स आणि स्टार्ट बटन
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E1E2F),
+                        minimumSize: const Size(double.infinity, 65),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: const BorderSide(color: Colors.white10),
+                        ),
+                        elevation: 5,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MathGameScreen(startLevel: 1)),
+                        );
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('🚀 START LEVEL 1 ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                          Text('(बेरीज)', style: TextStyle(fontSize: 14, color: Colors.white60)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E1E2F),
+                        minimumSize: const Size(double.infinity, 65),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: const BorderSide(color: Colors.white10),
+                        ),
+                        elevation: 5,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MathGameScreen(startLevel: 2)),
+                        );
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('⚡ START LEVEL 2 ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.amber)),
+                          Text('(वजाबाकी)', style: TextStyle(fontSize: 14, color: Colors.white60)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const Text(
+                "hk_production • Quiet Luxury Edition",
+                style: TextStyle(color: Colors.white24, fontSize: 11, letterSpacing: 1),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---- २. गेम स्क्रीन (आधीची स्क्रीन, जी आता होम स्क्रीननंतर उघडेल) ----
 class MathGameScreen extends StatefulWidget {
-  const MathGameScreen({super.key});
+  final int startLevel;
+  const MathGameScreen({super.key, required this.startLevel});
 
   @override
   State<MathGameScreen> createState() => _MathGameScreenState();
@@ -30,7 +167,7 @@ class MathGameScreen extends StatefulWidget {
 
 class _MathGameScreenState extends State<MathGameScreen> {
   int score = 0;
-  int level = 1;
+  late int level;
   late int number1;
   late int number2;
   late int correctAns;
@@ -40,17 +177,16 @@ class _MathGameScreenState extends State<MathGameScreen> {
   @override
   void initState() {
     super.initState();
+    level = widget.startLevel;
     startNewRound();
   }
 
   void startNewRound() {
     final random = Random();
     
-    if (score >= 50) {
-      level = 2;
+    if (level == 2) {
       operator = random.nextBool() ? "+" : "-";
     } else {
-      level = 1;
       operator = "+";
     }
 
@@ -88,6 +224,9 @@ class _MathGameScreenState extends State<MathGameScreen> {
     if (selectedAnswer == correctAns) {
       setState(() {
         score += 10;
+        if (score >= 50 && level == 1) {
+          level = 2; // ५० स्कोअर झाल्यावर ऑटोमॅटिक लेव्हल २
+        }
         startNewRound();
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,7 +242,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('❌ अरेरे! चूक झाली, पुन्हा प्रयत्न कर!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+          content: Text('❌ चूक झाली, पुन्हा प्रयत्न कर!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 400),
         ),
@@ -113,12 +252,16 @@ class _MathGameScreenState extends State<MathGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold = Scaffold(
       appBar: AppBar(
-        title: const Text('➕ MATH RUSH ✖️', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2, color: Colors.white)),
-        backgroundColor: const Color(0xFF16213E),
+        title: const Text('MATH RUSH', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2)),
+        backgroundColor: const Color(0xFF0D0D13),
         centerTitle: true,
-        elevation: 5,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () => Navigator.pop(context), // होम स्क्रीनवर परत जाण्यासाठी
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -130,13 +273,13 @@ class _MathGameScreenState extends State<MathGameScreen> {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(15)),
-                  child: Text('🌟 स्कोअर: $score', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                  decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(12)),
+                  child: Text('🌟 स्कोअर: $score', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(color: Colors.cyan, borderRadius: BorderRadius.circular(15)),
-                  child: Text('🚀 लेव्हल: $level', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                  decoration: BoxDecoration(color: const Color(0xFF1E1E2F), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white10)),
+                  child: Text('🚀 लेव्हल: $level', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
               ],
             ),
@@ -144,9 +287,9 @@ class _MathGameScreenState extends State<MathGameScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(40),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F3460),
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: Colors.cyan, width: 2),
+                color: const Color(0xFF1E1E2F),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.white10, width: 1),
               ),
               child: Text(
                 '$number1 $operator $number2 = ?',
@@ -167,22 +310,23 @@ class _MathGameScreenState extends State<MathGameScreen> {
               itemBuilder: (context, index) {
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE94560),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    elevation: 5,
+                    backgroundColor: const Color(0xFF2D2D44),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 2,
                   ),
                   onPressed: () => verifyAnswer(options[index]),
                   child: Text(
                     '${options[index]}',
-                    style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 );
               },
             ),
-            const Text(
-              "५० स्कोअर झाल्यावर लेव्हल २ अनलॉक होईल!",
-              style: TextStyle(color: Colors.white38, fontSize: 12, fontStyle: FontStyle.italic),
-            )
+            if (level == 1)
+              const Text(
+                "५० स्कोअर झाल्यावर ऑटोमॅटिक लेव्हल २ अनलॉक होईल!",
+                style: TextStyle(color: Colors.white38, fontSize: 12, fontStyle: FontStyle.italic),
+              )
           ],
         ),
       ),

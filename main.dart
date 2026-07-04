@@ -32,8 +32,8 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
     },
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
-      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'समय', 'time': 'समय',
-      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरी संख्या',
+      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
+      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरे संख्या',
       'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
     },
     'ja': {
@@ -98,18 +98,17 @@ class MainStartScreen extends StatelessWidget {
                   dropdownColor: const Color(0xFF1E1E2F),
                   underline: Container(),
                   items: const [
-                    DropdownMenuItem(value: 'en', child: Text('English')),
-                    DropdownMenuItem(value: 'mr', child: Text('मराठी')),
-                    DropdownMenuItem(value: 'hi', child: Text('हिन्दी')),
-                    DropdownMenuItem(value: 'ja', child: Text('日本語')),
-                    DropdownMenuItem(value: 'es', child: Text('Español')),
-                    DropdownMenuItem(value: 'zh', child: Text('中文')),
+                    DropdownMenuItem<String>(value: 'en', child: Text('English')),
+                    DropdownMenuItem<String>(value: 'mr', child: Text('मराठी')),
+                    DropdownMenuItem<String>(value: 'hi', child: Text('हिन्दी')),
+                    DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
+                    DropdownMenuItem<String>(value: 'es', child: Text('Español')),
+                    DropdownMenuItem<String>(value: 'zh', child: Text('中文')),
                   ],
                   onChanged: (val) { if (val != null) onLangChange(val); },
                 ),
               ],
             ),
-            // लहान मुलांसाठी क्युट राजा सिंह (Lion King) डिझाईन इमेज
             Column(
               children: [
                 ClipRRect(
@@ -124,7 +123,8 @@ class MainStartScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 const Text('MATH RUSH', style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold, letterSpacing: 4)),
-                Text(t('start').toUpperCase(), style: const TextStyle(fontSize: 12, color: Colors.white38, letterSpacing: 2)),
+                const SizedBox(height: 4),
+                const Text('GLOBAL EDITION', style: TextStyle(fontSize: 12, color: Colors.amber, letterSpacing: 2)),
               ],
             ),
             Padding(
@@ -145,7 +145,7 @@ class MainStartScreen extends StatelessWidget {
                 child: Text(t('start'), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.black, color: Colors.black)),
               ),
             ),
-            const Text("hk_production • Global Edition", style: TextStyle(color: Colors.white12, fontSize: 11)),
+            const Text("hk_production • Kids Special", style: TextStyle(color: Colors.white12, fontSize: 11)),
           ],
         ),
       ),
@@ -442,10 +442,10 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
               decoration: const InputDecoration(border: OutlineInputBorder()),
               dropdownColor: const Color(0xFF1E1E2F),
               items: const [
-                DropdownMenuItem(value: '+', child: Text('बेरीज (+)')),
-                DropdownMenuItem(value: '-', child: Text('वजाबाकी (-)')),
-                DropdownMenuItem(value: '×', child: Text('गुणाकार (×)')),
-                DropdownMenuItem(value: '÷', child: Text('भागाकार (÷)')),
+                DropdownMenuItem<String>(value: '+', child: Text('बेरीज (+)')),
+                DropdownMenuItem<String>(value: '-', child: Text('वजाबाकी (-)')),
+                DropdownMenuItem<String>(value: '×', child: Text('गुणाकार (×)')),
+                DropdownMenuItem<String>(value: '÷', child: Text('भागाकार (÷)')),
               ],
               onChanged: (val) { if (val != null) setState(() { selectedOp = val; }); },
             ),

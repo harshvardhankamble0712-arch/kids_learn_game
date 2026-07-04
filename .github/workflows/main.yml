@@ -3,8 +3,6 @@ name: Build Flutter APK
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -17,13 +15,12 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
+        distribution: 'temurin'
         java-version: '17'
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.0' # लेटेस्ट स्थिर व्हर्जन
         channel: 'stable'
 
     - name: Install dependencies
@@ -32,9 +29,9 @@ jobs:
     - name: Build APK
       run: flutter build apk --release
 
-    - name: Upload APK Artifact
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: release-apk
+        name: MathGame-APK
         path: build/app/outputs/flutter-apk/app-release.apk
         

@@ -1,328 +1,471 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 void main() {
-  runApp(const KidsGameApp());
+  runApp(const InternationalMathGame());
 }
 
-class KidsGameApp extends StatelessWidget {
-  const KidsGameApp({super.key});
+class InternationalMathGame extends StatefulWidget {
+  const InternationalMathGame({super.key});
+
+  @override
+  State<InternationalMathGame> createState() => _InternationalMathGameAppState();
+}
+
+class _InternationalMathGameAppState extends State<InternationalMathGame> {
+  String currentLang = 'en';
+
+  // ६ भाषांचे डिक्शनरी भाषांतर
+  final Map<String, Map<String, String>> localizedText = {
+    'en': {
+      'start': 'START GAME', 'select_mode': 'Select Mode', 'custom': 'Parents Custom Math',
+      'easy': 'Easy (1 Digit)', 'hard': 'Hard (Multi Digit)', 'score': 'Score', 'time': 'Time',
+      'back': 'Back', 'submit': 'Submit Question', 'enter_n1': 'Enter Number 1', 'enter_n2': 'Enter Number 2',
+      'parent_title': 'Custom Math Setup', 'correct': '🎉 Correct!', 'wrong': '❌ Wrong!', 'timeout': '⏰ Time Out!'
+    },
+    'mr': {
+      'start': 'गेम सुरू करा', 'select_mode': 'मोड निवडा', 'custom': 'आई-बाबा स्पेशल गणित',
+      'easy': 'सोपी लेव्हल (१ अंकी)', 'hard': 'अवघड लेव्हल (२/३ अंकी)', 'score': 'स्कोअर', 'time': 'वेळ',
+      'back': 'मागे', 'submit': 'गणित तयार करा', 'enter_n1': 'पहिली संख्या टाका', 'enter_n2': 'दुसरी संख्या टाका',
+      'parent_title': 'पालकांसाठी सेटिंग्ज', 'correct': '🎉 शाब्बास! बरोबर!', 'wrong': '❌ चूक झाली!', 'timeout': '⏰ वेळ संपली!'
+    },
+    'hi': {
+      'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
+      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'समय', 'time': 'समय',
+      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरी संख्या',
+      'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
+    },
+    'ja': {
+      'start': 'ゲームスタート', 'select_mode': 'モード選択', 'custom': '保護者カスタム数学',
+      'easy': 'かんたん (1桁)', 'hard': 'むずかしい (複数桁)', 'score': 'スコア', 'time': '時間',
+      'back': '戻る', 'submit': '質問を送信', 'enter_n1': '数 1 を入力', 'enter_n2': '数 2 を入力',
+      'parent_title': 'カスタム設定', 'correct': '🎉 正解！', 'wrong': '❌ 不正解！', 'timeout': '⏰ 時間切れ！'
+    },
+    'es': {
+      'start': 'INICIAR JUEGO', 'select_mode': 'Seleccionar Modo', 'custom': 'Matemáticas de Padres',
+      'easy': 'Fácil (1 Dígito)', 'hard': 'Difícil (Multi Dígito)', 'score': 'Puntuación', 'time': 'Tiempo',
+      'back': 'Atrás', 'submit': 'Enviar Pregunta', 'enter_n1': 'Número 1', 'enter_n2': 'Número 2',
+      'parent_title': 'Configuración de Padres', 'correct': '🎉 ¡Correcto!', 'wrong': '❌ ¡Incorrecto!', 'timeout': '⏰ ¡Tiempo Terminado!'
+    },
+    'zh': {
+      'start': '开始游戏', 'select_mode': '选择模式', 'custom': '家长自定数学',
+      'easy': '简单 (1位数)', 'hard': '困难 (多位数)', 'score': '分数', 'time': '时间',
+      'back': '返回', 'submit': '提交题目', 'enter_n1': '输入数字 1', 'enter_n2': '输入数字 2',
+      'parent_title': '家长设置', 'correct': '🎉 回答正确！', 'wrong': '❌ 回答错误！', 'timeout': '⏰ 时间到！'
+    }
+  };
+
+  void changeLanguage(String langCode) {
+    setState(() { currentLang = langCode; });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Math Rush',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0D0D13),
-      ),
-      home: const GameHomeScreen(),
+      title: 'Math Rush Global',
+      theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: const Color(0xFF0A0A0F)),
+      home: MainStartScreen(localizedText: localizedText, currentLang: currentLang, onLangChange: changeLanguage),
     );
   }
 }
 
-// ---- १. पहिली नवीन वेलकम स्क्रीन (Home Screen) ----
-class GameHomeScreen extends StatelessWidget {
-  const GameHomeScreen({super.key});
+// ---- १. मुख्य पहिली स्क्रीन ----
+class MainStartScreen extends StatelessWidget {
+  final Map<String, Map<String, String>> localizedText;
+  final String currentLang;
+  final Function(String) onLangChange;
+
+  const MainStartScreen({super.key, required this.localizedText, required this.currentLang, required this.onLangChange});
 
   @override
   Widget build(BuildContext context) {
+    String t(String key) => localizedText[currentLang]![key]!;
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF161623), Color(0xFF0D0D13)],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF1E1E2F),
-                      border: Border.all(color: Colors.amber.shade600, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.amber.withOpacity(0.2),
-                          blurRadius: 20,
-                          spreadRadius: 5,
-                        )
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.calculate_rounded,
-                      size: 80,
-                      color: Colors.amber,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'MATH RUSH',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 4,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'SHARPEN YOUR MIND',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 2,
-                      color: Colors.amber.shade600,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E1E2F),
-                        minimumSize: const Size(double.infinity, 65),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side: const BorderSide(color: Colors.white10),
-                        ),
-                        elevation: 5,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MathGameScreen(startLevel: 1)),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('🚀 START LEVEL 1 ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                          Text('(बेरीज)', style: TextStyle(fontSize: 14, color: Colors.white60)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E1E2F),
-                        minimumSize: const Size(double.infinity, 65),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          side: const BorderSide(color: Colors.white10),
-                        ),
-                        elevation: 5,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MathGameScreen(startLevel: 2)),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('⚡ START LEVEL 2 ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.amber)),
-                          Text('(वजाबाकी)', style: TextStyle(fontSize: 14, color: Colors.white60)),
-                        ],
-                      ),
-                    ),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.language, color: Colors.amber, size: 20),
+                const SizedBox(width: 8),
+                DropdownButton<String>(
+                  value: currentLang,
+                  dropdownColor: const Color(0xFF1E1E2F),
+                  underline: Container(),
+                  items: const [
+                    DropdownMenuItem(value: 'en', child: Text('English')),
+                    DropdownMenuItem(value: 'mr', child: Text('मराठी')),
+                    DropdownMenuItem(value: 'hi', child: Text('हिन्दी')),
+                    DropdownMenuItem(value: 'ja', child: Text('日本語')),
+                    DropdownMenuItem(value: 'es', child: Text('Español')),
+                    DropdownMenuItem(value: 'zh', child: Text('中文')),
                   ],
+                  onChanged: (val) { if (val != null) onLangChange(val); },
                 ),
+              ],
+            ),
+            // लहान मुलांसाठी क्युट राजा सिंह (Lion King) डिझाईन इमेज
+            Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.network(
+                    "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop&q=80",
+                    height: 150,
+                    width: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.workspace_premium_rounded, size: 100, color: Colors.amber),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text('MATH RUSH', style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold, letterSpacing: 4)),
+                Text(t('start').toUpperCase(), style: const TextStyle(fontSize: 12, color: Colors.white38, letterSpacing: 2)),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  minimumSize: const Size(double.infinity, 70),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  elevation: 10,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ModeSelectionScreen(localizedText: localizedText, currentLang: currentLang)),
+                  );
+                },
+                child: Text(t('start'), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.black, color: Colors.black)),
               ),
-              const Text(
-                "hk_production • Quiet Luxury Edition",
-                style: TextStyle(color: Colors.white24, fontSize: 11, letterSpacing: 1),
-              )
-            ],
-          ),
+            ),
+            const Text("hk_production • Global Edition", style: TextStyle(color: Colors.white12, fontSize: 11)),
+          ],
         ),
       ),
     );
   }
 }
 
-// ---- २. गेम स्क्रीन ----
-class MathGameScreen extends StatefulWidget {
-  final int startLevel;
-  const MathGameScreen({super.key, required this.startLevel});
+// ---- २. मोड सिलेक्शन स्क्रीन ----
+class ModeSelectionScreen extends StatelessWidget {
+  final Map<String, Map<String, String>> localizedText;
+  final String currentLang;
+
+  const ModeSelectionScreen({super.key, required this.localizedText, required this.currentLang});
 
   @override
-  State<MathGameScreen> createState() => _MathGameScreenState();
+  Widget build(BuildContext context) {
+    String t(String key) => localizedText[currentLang]![key]!;
+
+    Widget opButton(String label, String op, Color color) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF1E1E2F),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: color.withOpacity(0.3))),
+          padding: const EdgeInsets.all(20),
+        ),
+        onPressed: () => showLevelDialog(context, op),
+        child: Text(label, style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: color)),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text(t('select_mode')), backgroundColor: const Color(0xFF0A0A0F), elevation: 0),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+              children: [
+                opButton('+', '+', Colors.green),
+                opButton('-', '-', Colors.blue),
+                opButton('×', '×', Colors.amber),
+                opButton('÷', '÷', Colors.red),
+              ],
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2D2D44),
+                minimumSize: const Size(double.infinity, 65),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              icon: const Icon(Icons.security_rounded, color: Colors.amber),
+              label: Text(t('custom'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ParentsSetupScreen(localizedText: localizedText, currentLang: currentLang)),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showLevelDialog(BuildContext context, String op) {
+    String t(String key) => localizedText[currentLang]![key]!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E2F),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('${t('select_mode')} ($op)', textAlign: TextAlign.center),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => GameplayScreen(op: op, isHard: false, localizedText: localizedText, currentLang: currentLang)));
+            },
+            child: Text(t('easy'), style: const TextStyle(color: Colors.green, fontSize: 16)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => GameplayScreen(op: op, isHard: true, localizedText: localizedText, currentLang: currentLang)));
+            },
+            child: Text(t('hard'), style: const TextStyle(color: Colors.red, fontSize: 16)),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _MathGameScreenState extends State<MathGameScreen> {
+// ---- ३. मुख्य गेमप्ले स्क्रीन ----
+class GameplayScreen extends StatefulWidget {
+  final String op;
+  final bool isHard;
+  final Map<String, Map<String, String>> localizedText;
+  final String currentLang;
+  final bool isCustom;
+  final int? customN1;
+  final int? customN2;
+
+  const GameplayScreen({
+    super.key, required this.op, required this.isHard, required this.localizedText, required this.currentLang,
+    this.isCustom = false, this.customN1, this.customN2
+  });
+
+  @override
+  State<GameplayScreen> createState() => _GameplayScreenState();
+}
+
+class _GameplayScreenState extends State<GameplayScreen> {
   int score = 0;
-  late int level;
-  late int number1;
-  late int number2;
-  late int correctAns;
+  late int num1, num2, correctAns;
   List<int> options = [];
-  String operator = "+";
+  int timeLeft = 15;
+  Timer? gameTimer;
 
   @override
   void initState() {
     super.initState();
-    level = widget.startLevel;
     startNewRound();
   }
 
-  void startNewRound() {
-    final random = Random();
-    
-    if (level == 2) {
-      operator = random.nextBool() ? "+" : "-";
-    } else {
-      operator = "+";
-    }
-
-    number1 = random.nextInt(10 * level) + 2;
-    number2 = random.nextInt(10 * level) + 2;
-
-    if (operator == "+") {
-      correctAns = number1 + number2;
-    } else {
-      if (number1 < number2) {
-        int temp = number1;
-        number1 = number2;
-        number2 = temp;
-      }
-      correctAns = number1 - number2;
-    }
-
-    options = [
-      correctAns,
-      correctAns + random.nextInt(4) + 1,
-      correctAns - random.nextInt(3) - 1,
-      number1 + 5
-    ];
-    
-    for(int i=0; i<options.length; i++) {
-      if(options[i] < 0 || (options[i] == correctAns && i != 0)) {
-        options[i] = correctAns + i + 2;
-      }
-    }
-    
-    options.shuffle();
+  @override
+  void dispose() {
+    gameTimer?.cancel();
+    super.dispose();
   }
 
-  void verifyAnswer(int selectedAnswer) {
-    if (selectedAnswer == correctAns) {
+  void startTimer() {
+    gameTimer?.cancel();
+    timeLeft = 15;
+    gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        score += 10;
-        if (score >= 50 && level == 1) {
-          level = 2;
+        if (timeLeft > 0) {
+          timeLeft--;
+        } else {
+          timer.cancel();
+          handleTimeout();
         }
-        startNewRound();
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('🎉 शाब्बास! बरोबर उत्तर!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-          backgroundColor: Colors.green,
-          duration: Duration(milliseconds: 400),
-        ),
-      );
+    });
+  }
+
+  void handleTimeout() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(widget.localizedText[widget.currentLang]!['timeout']!, style: const TextStyle(fontSize: 18, color: Colors.white)),
+      backgroundColor: Colors.orange, duration: const Duration(milliseconds: 600),
+    ));
+    if (!widget.isCustom) {
+      Future.delayed(const Duration(milliseconds: 600), () => setState(() { startNewRound(); }));
     } else {
-      setState(() {
-        if (score > 0) score -= 5;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('❌ चूक झाली, पुन्हा प्रयत्न कर!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-          backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 400),
-        ),
-      );
+      Navigator.pop(context);
     }
+  }
+
+  void startNewRound() {
+    if (widget.isCustom) {
+      num1 = widget.customN1!;
+      num2 = widget.customN2!;
+    } else {
+      final random = Random();
+      int maxRange = widget.isHard ? 100 : 10;
+      num1 = random.nextInt(maxRange) + (widget.isHard ? 10 : 1);
+      num2 = random.nextInt(widget.isHard ? 50 : 9) + 1;
+    }
+
+    if (widget.op == '+') correctAns = num1 + num2;
+    if (widget.op == '-') {
+      if (num1 < num2) { int t = num1; num1 = num2; num2 = t; }
+      correctAns = num1 - num2;
+    }
+    if (widget.op == '×') correctAns = num1 * num2;
+    if (widget.op == '÷') {
+      correctAns = num1;
+      num1 = correctAns * num2;
+    }
+
+    final random = Random();
+    options = [correctAns, correctAns + random.nextInt(4) + 1, correctAns - random.nextInt(3) - 1, correctAns + 5];
+    for (int i = 0; i < options.length; i++) {
+      if (options[i] < 0 || (options[i] == correctAns && i != 0)) options[i] = correctAns + i + 2;
+    }
+    options.shuffle();
+    startTimer();
+  }
+
+  void checkAnswer(int selected) {
+    gameTimer?.cancel();
+    bool isCorrect = (selected == correctAns);
+    
+    setState(() {
+      if (isCorrect) {
+        score += 10;
+      } else {
+        if (score > 0) score -= 5;
+      }
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(widget.localizedText[widget.currentLang]![isCorrect ? 'correct' : 'wrong']!, style: const TextStyle(fontSize: 18)),
+      backgroundColor: isCorrect ? Colors.green : Colors.red,
+      duration: const Duration(milliseconds: 500),
+    ));
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (widget.isCustom) {
+        Navigator.pop(context);
+      } else {
+        setState(() { startNewRound(); });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    String t(String key) => widget.localizedText[widget.currentLang]![key]!;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MATH RUSH', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2)),
-        backgroundColor: const Color(0xFF0D0D13),
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
+      appBar: AppBar(title: Text('${t('score')}: $score'), backgroundColor: const Color(0xFF0A0A0F), centerTitle: true, elevation: 0),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(12)),
-                  child: Text('🌟 स्कोअर: $score', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(color: const Color(0xFF1E1E2F), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white10)),
-                  child: Text('🚀 लेव्हल: $level', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ],
-            ),
+            LinearProgressIndicator(value: timeLeft / 15, backgroundColor: Colors.white10, color: timeLeft > 5 ? Colors.amber : Colors.red),
+            Text('${t('time')}: $timeLeft s', style: TextStyle(fontSize: 18, color: timeLeft > 5 ? Colors.white70 : Colors.red, fontWeight: FontWeight.bold)),
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(40),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E1E2F),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white10, width: 1),
-              ),
-              child: Text(
-                '$number1 $operator $number2 = ?',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2),
-              ),
+              decoration: BoxDecoration(color: const Color(0xFF1E1E2F), borderRadius: BorderRadius.circular(24)),
+              child: Text('$num1 ${widget.op} $num2 = ?', textAlign: TextAlign.center, style: const TextStyle(fontSize: 44, fontWeight: FontWeight.bold)),
             ),
+            
             GridView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 1.3,
-              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16, childAspectRatio: 1.3),
               itemCount: options.length,
-              itemBuilder: (context, index) {
-                return ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2D2D44),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    elevation: 2,
-                  ),
-                  onPressed: () => verifyAnswer(options[index]),
-                  child: Text(
-                    '${options[index]}',
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                );
-              },
+              itemBuilder: (context, idx) => ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2D2D44), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                onPressed: () => checkAnswer(options[idx]),
+                child: Text('${options[idx]}', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+              ),
             ),
-            if (level == 1)
-              const Text(
-                "५० स्कोअर झाल्यावर ऑटोमॅटिक लेव्हल २ अनलॉक होईल!",
-                style: TextStyle(color: Colors.white38, fontSize: 12, fontStyle: FontStyle.italic),
-              )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---- ४. पालकांसाठी स्पेशल स्क्रीन ----
+class ParentsSetupScreen extends StatefulWidget {
+  final Map<String, Map<String, String>> localizedText;
+  final String currentLang;
+
+  const ParentsSetupScreen({super.key, required this.localizedText, required this.currentLang});
+
+  @override
+  State<ParentsSetupScreen> createState() => _ParentsSetupScreenState();
+}
+
+class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
+  final TextEditingController n1Controller = TextEditingController();
+  final TextEditingController n2Controller = TextEditingController();
+  String selectedOp = '+';
+
+  @override
+  Widget build(BuildContext context) {
+    String t(String key) => widget.localizedText[widget.currentLang]![key]!;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(t('parent_title')), backgroundColor: const Color(0xFF0A0A0F)),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(controller: n1Controller, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: t('enter_n1'), border: const OutlineInputBorder())),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: selectedOp,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              dropdownColor: const Color(0xFF1E1E2F),
+              items: const [
+                DropdownMenuItem(value: '+', child: Text('बेरीज (+)')),
+                DropdownMenuItem(value: '-', child: Text('वजाबाकी (-)')),
+                DropdownMenuItem(value: '×', child: Text('गुणाकार (×)')),
+                DropdownMenuItem(value: '÷', child: Text('भागाकार (÷)')),
+              ],
+              onChanged: (val) { if (val != null) setState(() { selectedOp = val; }); },
+            ),
+            const SizedBox(height: 20),
+            TextField(controller: n2Controller, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: t('enter_n2'), border: const OutlineInputBorder())),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, padding: const EdgeInsets.all(20)),
+              onPressed: () {
+                int? n1 = int.tryParse(n1Controller.text);
+                int? n2 = int.tryParse(n2Controller.text);
+                if (n1 != null && n2 != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GameplayScreen(op: selectedOp, isHard: false, localizedText: widget.localizedText, currentLang: widget.currentLang, isCustom: true, customN1: n1, customN2: n2)),
+                  );
+                }
+              },
+              child: Text(t('submit'), style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+            )
           ],
         ),
       ),

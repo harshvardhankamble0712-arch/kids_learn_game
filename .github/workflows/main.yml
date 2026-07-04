@@ -2,15 +2,17 @@ name: Build Flutter APK
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Set up Java
       uses: actions/setup-java@v4
@@ -21,13 +23,11 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
+        flutter-version: '3.22.0' # लेटेस्ट स्थिर व्हर्जन
         channel: 'stable'
 
-    - name: Create Flutter Project Structure
-      run: |
-        flutter create --org com.harshvardhan.kidsgame --project-name kids_learn_game .
-        rm lib/main.dart
-        mv main.dart lib/main.dart
+    - name: Install dependencies
+      run: flutter pub get
 
     - name: Build APK
       run: flutter build apk --release
@@ -35,6 +35,6 @@ jobs:
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Kids-Game-APK
+        name: release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
         

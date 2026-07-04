@@ -16,7 +16,6 @@ class InternationalMathGame extends StatefulWidget {
 class _InternationalMathGameAppState extends State<InternationalMathGame> {
   String currentLang = 'en';
 
-  // ६ भाषांचे डिक्शनरी भाषांतर - सर्व शुद्ध आणि एरर-फ्री
   final Map<String, Map<String, String>> localizedText = {
     'en': {
       'start': 'START GAME', 'select_mode': 'Select Mode', 'custom': 'Parents Custom Math',
@@ -33,26 +32,8 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
       'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
-      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरी संख्या',
+      'back': 'पीछे', 'submit': 'सवाल Set करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरी संख्या',
       'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
-    },
-    'ja': {
-      'start': 'ゲームスタート', 'select_mode': 'モード選択', 'custom': '保護者カスタム数学',
-      'easy': 'かんたん (1桁)', 'hard': 'むずかしい (複数桁)', 'score': 'スコア', 'time': '時間',
-      'back': '戻る', 'submit': '質問を送信', 'enter_n1': '数 1 を入力', 'enter_n2': '数 2 を入力',
-      'parent_title': 'カスタム設定', 'correct': '🎉 正解！', 'wrong': '❌ 不正解！', 'timeout': '⏰ 時間切れ！'
-    },
-    'es': {
-      'start': 'INICIAR JUEGO', 'select_mode': 'Seleccionar Modo', 'custom': 'Matemáticas de Padres',
-      'easy': 'Fácil (1 Dígito)', 'hard': 'Difícil (Multi Dígito)', 'score': 'Puntuación', 'time': 'Tiempo',
-      'back': 'Atrás', 'submit': 'Enviar Pregunta', 'enter_n1': 'Número 1', 'enter_n2': 'Número 2',
-      'parent_title': 'Configuración de Padres', 'correct': '🎉 ¡Correcto!', 'wrong': '❌ ¡Incorrecto!', 'timeout': '⏰ ¡Tiempo Terminado!'
-    },
-    'zh': {
-      'start': '开始游戏', 'select_mode': '选择模式', 'custom': '家长自定数学',
-      'easy': '简单 (1位数)', 'hard': '困难 (多位数)', 'score': '分数', 'time': '时间',
-      'back': '返回', 'submit': '提交题目', 'enter_n1': '输入数字 1', 'enter_n2': '输入数字 2',
-      'parent_title': '家长设置', 'correct': '🎉 回答正确！', 'wrong': '❌ 回答错误！', 'timeout': '⏰ 时间到！'
     }
   };
 
@@ -71,7 +52,6 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
   }
 }
 
-// ---- १. मुख्य पहिली स्क्रीन ----
 class MainStartScreen extends StatelessWidget {
   final Map<String, Map<String, String>> localizedText;
   final String currentLang;
@@ -101,9 +81,6 @@ class MainStartScreen extends StatelessWidget {
                     DropdownMenuItem<String>(value: 'en', child: Text('English')),
                     DropdownMenuItem<String>(value: 'mr', child: Text('मराठी')),
                     DropdownMenuItem<String>(value: 'hi', child: Text('हिन्दी')),
-                    DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
-                    DropdownMenuItem<String>(value: 'es', child: Text('Español')),
-                    DropdownMenuItem<String>(value: 'zh', child: Text('中文')),
                   ],
                   onChanged: (String? val) { if (val != null) onLangChange(val); },
                 ),
@@ -152,7 +129,6 @@ class MainStartScreen extends StatelessWidget {
   }
 }
 
-// ---- २. मोड सिलेक्शन स्क्रीन ----
 class ModeSelectionScreen extends StatelessWidget {
   final Map<String, Map<String, String>> localizedText;
   final String currentLang;
@@ -250,7 +226,6 @@ class ModeSelectionScreen extends StatelessWidget {
   }
 }
 
-// ---- ३. मुख्य गेमप्ले स्क्रीन ----
 class GameplayScreen extends StatefulWidget {
   final String op;
   final bool isHard;
@@ -411,7 +386,6 @@ class _GameplayScreenState extends State<GameplayScreen> {
   }
 }
 
-// ---- ४. पालकांसाठी स्पेशल स्क्रीन ----
 class ParentsSetupScreen extends StatefulWidget {
   final Map<String, Map<String, String>> localizedText;
   final String currentLang;

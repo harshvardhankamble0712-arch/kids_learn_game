@@ -32,7 +32,7 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
     },
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
-      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
+      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'समय', 'time': 'समय',
       'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरे संख्या',
       'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
     },
@@ -97,15 +97,15 @@ class MainStartScreen extends StatelessWidget {
                   value: currentLang,
                   dropdownColor: const Color(0xFF1E1E2F),
                   underline: Container(),
-                  items: const [
-                    DropdownMenuItem<String>(value: 'en', child: Text('English')),
-                    DropdownMenuItem<String>(value: 'mr', child: Text('मराठी')),
-                    DropdownMenuItem<String>(value: 'hi', child: Text('हिन्दी')),
-                    DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
-                    DropdownMenuItem<String>(value: 'es', child: Text('Español')),
-                    DropdownMenuItem<String>(value: 'zh', child: Text('中文')),
+                  items: [
+                    DropdownMenuItem(value: 'en', child: const Text('English')),
+                    DropdownMenuItem(value: 'mr', child: const Text('मराठी')),
+                    DropdownMenuItem(value: 'hi', child: const Text('हिन्दी')),
+                    DropdownMenuItem(value: 'ja', child: const Text('日本語')),
+                    DropdownMenuItem(value: 'es', child: const Text('Español')),
+                    DropdownMenuItem(value: 'zh', child: const Text('中文')),
                   ],
-                  onChanged: (val) { if (val != null) onLangChange(val); },
+                  onChanged: (String? val) { if (val != null) onLangChange(val); },
                 ),
               ],
             ),
@@ -164,14 +164,14 @@ class ModeSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String t(String key) => localizedText[currentLang]![key]!;
 
-    Widget opButton(String label, String op, Color color) {
+    Widget opButton(BuildContext ctx, String label, String op, Color color) {
       return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF1E1E2F),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: color.withOpacity(0.3))),
           padding: const EdgeInsets.all(20),
         ),
-        onPressed: () => showLevelDialog(context, op),
+        onPressed: () => showLevelDialog(ctx, op),
         child: Text(label, style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: color)),
       );
     }
@@ -189,10 +189,10 @@ class ModeSelectionScreen extends StatelessWidget {
               crossAxisSpacing: 20,
               mainAxisSpacing: 20,
               children: [
-                opButton('+', '+', Colors.green),
-                opButton('-', '-', Colors.blue),
-                opButton('×', '×', Colors.amber),
-                opButton('÷', '÷', Colors.red),
+                opButton(context, '+', '+', Colors.green),
+                opButton(context, '-', '-', Colors.blue),
+                opButton(context, '×', '×', Colors.amber),
+                opButton(context, '÷', '÷', Colors.red),
               ],
             ),
             const SizedBox(height: 40),
@@ -441,13 +441,13 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
               value: selectedOp,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               dropdownColor: const Color(0xFF1E1E2F),
-              items: const [
-                DropdownMenuItem<String>(value: '+', child: Text('बेरीज (+)')),
-                DropdownMenuItem<String>(value: '-', child: Text('वजाबाकी (-)')),
-                DropdownMenuItem<String>(value: '×', child: Text('गुणाकार (×)')),
-                DropdownMenuItem<String>(value: '÷', child: Text('भागाकार (÷)')),
+              items: [
+                DropdownMenuItem(value: '+', child: const Text('बेरीज (+)')),
+                DropdownMenuItem(value: '-', child: const Text('वजाबाकी (-)')),
+                DropdownMenuItem(value: '×', child: const Text('गुणाकार (×)')),
+                DropdownMenuItem(value: '÷', child: const Text('भागाकार (÷)')),
               ],
-              onChanged: (val) { if (val != null) setState(() { selectedOp = val; }); },
+              onChanged: (String? val) { if (val != null) setState(() { selectedOp = val; }); },
             ),
             const SizedBox(height: 20),
             TextField(controller: n2Controller, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: t('enter_n2'), border: const OutlineInputBorder())),

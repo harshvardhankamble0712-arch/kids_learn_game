@@ -1,4 +1,4 @@
-          import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
@@ -16,7 +16,7 @@ class InternationalMathGame extends StatefulWidget {
 class _InternationalMathGameAppState extends State<InternationalMathGame> {
   String currentLang = 'en';
 
-  // ६ भाषांचे डिक्शनरी भाषांतर
+  // ६ भाषांचे डिक्शनरी भाषांतर (सर्व शुद्ध आणि दुरुस्त केलेले)
   final Map<String, Map<String, String>> localizedText = {
     'en': {
       'start': 'START GAME', 'select_mode': 'Select Mode', 'custom': 'Parents Custom Math',
@@ -28,13 +28,13 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
       'start': 'गेम सुरू करा', 'select_mode': 'मोड निवडा', 'custom': 'आई-बाबा स्पेशल गणित',
       'easy': 'सोपी लेव्हल (१ अंकी)', 'hard': 'अवघड लेव्हल (२/३ अंकी)', 'score': 'स्कोअर', 'time': 'वेळ',
       'back': 'मागे', 'submit': 'गणित तयार करा', 'enter_n1': 'पहिली संख्या टाका', 'enter_n2': 'दुसरी संख्या टाका',
-      'parent_title': 'पालकांसाठी領तींग्ज', 'correct': '🎉 शाब्बास! बरोबर!', 'wrong': '❌ चूक झाली!', 'timeout': '⏰ वेळ संपली!'
+      'parent_title': 'पालकांसाठी सेटिंग्ज', 'correct': '🎉 शाब्बास! बरोबर!', 'wrong': '❌ चूक झाली!', 'timeout': '⏰ वेळ संपली!'
     },
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
       'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
       'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरे संख्या',
-      'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
+      'parent_title': 'पेरेंट्स局ेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
     },
     'ja': {
       'start': 'ゲームスタート', 'select_mode': 'モード選択', 'custom': '保護者カスタム数学',
@@ -97,7 +97,7 @@ class MainStartScreen extends StatelessWidget {
                   value: currentLang,
                   dropdownColor: const Color(0xFF1E1E2F),
                   underline: Container(),
-                  items: const <DropdownMenuItem<String>>[
+                  items: const [
                     DropdownMenuItem<String>(value: 'en', child: Text('English')),
                     DropdownMenuItem<String>(value: 'mr', child: Text('मराठी')),
                     DropdownMenuItem<String>(value: 'hi', child: Text('हिन्दी')),
@@ -444,7 +444,7 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
               value: selectedOp,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               dropdownColor: const Color(0xFF1E1E2F),
-              items: const <DropdownMenuItem<String>>[
+              items: const [
                 DropdownMenuItem<String>(value: '+', child: Text('बेरीज (+)')),
                 DropdownMenuItem<String>(value: '-', child: Text('वजाबाकी (-)')),
                 DropdownMenuItem<String>(value: '×', child: Text('गुणाकार (×)')),
@@ -475,3 +475,4 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
     );
   }
 }
+

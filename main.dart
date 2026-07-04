@@ -1,4 +1,4 @@
-      import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() {
@@ -14,7 +14,7 @@ class KidsGameApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Math Rush',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0D0D13), // Ultra Dark Luxury Aesthetic
+        scaffoldBackgroundColor: const Color(0xFF0D0D13),
       ),
       home: const GameHomeScreen(),
     );
@@ -40,7 +40,6 @@ class GameHomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // गेमचा लोगो / फोटो ऐवजी कडक डिझाईन आयकॉन
               Column(
                 children: [
                   Container(
@@ -85,8 +84,6 @@ class GameHomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-
-              // लेव्हल निवडीचे ऑप्शन्स आणि स्टार्ट बटन
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
@@ -143,7 +140,6 @@ class GameHomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              
               const Text(
                 "hk_production • Quiet Luxury Edition",
                 style: TextStyle(color: Colors.white24, fontSize: 11, letterSpacing: 1),
@@ -156,7 +152,7 @@ class GameHomeScreen extends StatelessWidget {
   }
 }
 
-// ---- २. गेम स्क्रीन (आधीची स्क्रीन, जी आता होम स्क्रीननंतर उघडेल) ----
+// ---- २. गेम स्क्रीन ----
 class MathGameScreen extends StatefulWidget {
   final int startLevel;
   const MathGameScreen({super.key, required this.startLevel});
@@ -225,7 +221,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
       setState(() {
         score += 10;
         if (score >= 50 && level == 1) {
-          level = 2; // ५० स्कोअर झाल्यावर ऑटोमॅटिक लेव्हल २
+          level = 2;
         }
         startNewRound();
       });
@@ -252,7 +248,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold = Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('MATH RUSH', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2)),
         backgroundColor: const Color(0xFF0D0D13),
@@ -260,7 +256,7 @@ class _MathGameScreenState extends State<MathGameScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context), // होम स्क्रीनवर परत जाण्यासाठी
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(

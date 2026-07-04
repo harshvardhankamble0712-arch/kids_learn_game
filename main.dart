@@ -16,7 +16,7 @@ class InternationalMathGame extends StatefulWidget {
 class _InternationalMathGameAppState extends State<InternationalMathGame> {
   String currentLang = 'en';
 
-  // ६ भाषांचे डिक्शनरी भाषांतर (सर्व शुद्ध आणि दुरुस्त केलेले)
+  // ६ भाषांचे डिक्शनरी भाषांतर - सर्व शुद्ध आणि एरर-फ्री
   final Map<String, Map<String, String>> localizedText = {
     'en': {
       'start': 'START GAME', 'select_mode': 'Select Mode', 'custom': 'Parents Custom Math',
@@ -33,8 +33,8 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
       'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
-      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरे संख्या',
-      'parent_title': 'पेरेंट्स局ेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
+      'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरी संख्या',
+      'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
     },
     'ja': {
       'start': 'ゲームスタート', 'select_mode': 'モード選択', 'custom': '保護者カスタム数学',
@@ -475,4 +475,3 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
     );
   }
 }
-

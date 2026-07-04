@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+          import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
@@ -28,11 +28,11 @@ class _InternationalMathGameAppState extends State<InternationalMathGame> {
       'start': 'गेम सुरू करा', 'select_mode': 'मोड निवडा', 'custom': 'आई-बाबा स्पेशल गणित',
       'easy': 'सोपी लेव्हल (१ अंकी)', 'hard': 'अवघड लेव्हल (२/३ अंकी)', 'score': 'स्कोअर', 'time': 'वेळ',
       'back': 'मागे', 'submit': 'गणित तयार करा', 'enter_n1': 'पहिली संख्या टाका', 'enter_n2': 'दुसरी संख्या टाका',
-      'parent_title': 'पालकांसाठी सेटिंग्ज', 'correct': '🎉 शाब्बास! बरोबर!', 'wrong': '❌ चूक झाली!', 'timeout': '⏰ वेळ संपली!'
+      'parent_title': 'पालकांसाठी領तींग्ज', 'correct': '🎉 शाब्बास! बरोबर!', 'wrong': '❌ चूक झाली!', 'timeout': '⏰ वेळ संपली!'
     },
     'hi': {
       'start': 'खेल शुरू करें', 'select_mode': 'मोड चुनें', 'custom': 'माता-पिता स्पेशल गणित',
-      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'समय', 'time': 'समय',
+      'easy': 'आसान लेवल (1 अंक)', 'hard': 'कठिन लेवल (2/3 अंक)', 'score': 'स्कोर', 'time': 'समय',
       'back': 'पीछे', 'submit': 'सवाल सेट करें', 'enter_n1': 'पहली संख्या', 'enter_n2': 'दूसरे संख्या',
       'parent_title': 'पेरेंट्स सेटअप', 'correct': '🎉 सही उत्तर!', 'wrong': '❌ गलत उत्तर!', 'timeout': '⏰ समय समाप्त!'
     },
@@ -97,13 +97,13 @@ class MainStartScreen extends StatelessWidget {
                   value: currentLang,
                   dropdownColor: const Color(0xFF1E1E2F),
                   underline: Container(),
-                  items: [
-                    DropdownMenuItem(value: 'en', child: const Text('English')),
-                    DropdownMenuItem(value: 'mr', child: const Text('मराठी')),
-                    DropdownMenuItem(value: 'hi', child: const Text('हिन्दी')),
-                    DropdownMenuItem(value: 'ja', child: const Text('日本語')),
-                    DropdownMenuItem(value: 'es', child: const Text('Español')),
-                    DropdownMenuItem(value: 'zh', child: const Text('中文')),
+                  items: const <DropdownMenuItem<String>>[
+                    DropdownMenuItem<String>(value: 'en', child: Text('English')),
+                    DropdownMenuItem<String>(value: 'mr', child: Text('मराठी')),
+                    DropdownMenuItem<String>(value: 'hi', child: Text('हिन्दी')),
+                    DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
+                    DropdownMenuItem<String>(value: 'es', child: Text('Español')),
+                    DropdownMenuItem<String>(value: 'zh', child: Text('中文')),
                   ],
                   onChanged: (String? val) { if (val != null) onLangChange(val); },
                 ),
@@ -113,12 +113,11 @@ class MainStartScreen extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30),
-                  child: Image.network(
-                    "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop&q=80",
+                  child: Container(
                     height: 150,
                     width: 150,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.workspace_premium_rounded, size: 100, color: Colors.amber),
+                    color: const Color(0xFF1E1E2F),
+                    child: const Icon(Icons.workspace_premium_rounded, size: 100, color: Colors.amber),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -164,18 +163,6 @@ class ModeSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String t(String key) => localizedText[currentLang]![key]!;
 
-    Widget opButton(BuildContext ctx, String label, String op, Color color) {
-      return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF1E1E2F),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: color.withOpacity(0.3))),
-          padding: const EdgeInsets.all(20),
-        ),
-        onPressed: () => showLevelDialog(ctx, op),
-        child: Text(label, style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: color)),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(title: Text(t('select_mode')), backgroundColor: const Color(0xFF0A0A0F), elevation: 0),
       body: Padding(
@@ -189,10 +176,26 @@ class ModeSelectionScreen extends StatelessWidget {
               crossAxisSpacing: 20,
               mainAxisSpacing: 20,
               children: [
-                opButton(context, '+', '+', Colors.green),
-                opButton(context, '-', '-', Colors.blue),
-                opButton(context, '×', '×', Colors.amber),
-                opButton(context, '÷', '÷', Colors.red),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E2F), padding: const EdgeInsets.all(20)),
+                  onPressed: () => showLevelDialog(context, '+'),
+                  child: const Text('+', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.green)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E2F), padding: const EdgeInsets.all(20)),
+                  onPressed: () => showLevelDialog(context, '-'),
+                  child: const Text('-', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.blue)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E2F), padding: const EdgeInsets.all(20)),
+                  onPressed: () => showLevelDialog(context, '×'),
+                  child: const Text('×', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.amber)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E1E2F), padding: const EdgeInsets.all(20)),
+                  onPressed: () => showLevelDialog(context, '÷'),
+                  child: const Text('÷', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.red)),
+                ),
               ],
             ),
             const SizedBox(height: 40),
@@ -441,11 +444,11 @@ class _ParentsSetupScreenState extends State<ParentsSetupScreen> {
               value: selectedOp,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               dropdownColor: const Color(0xFF1E1E2F),
-              items: [
-                DropdownMenuItem(value: '+', child: const Text('बेरीज (+)')),
-                DropdownMenuItem(value: '-', child: const Text('वजाबाकी (-)')),
-                DropdownMenuItem(value: '×', child: const Text('गुणाकार (×)')),
-                DropdownMenuItem(value: '÷', child: const Text('भागाकार (÷)')),
+              items: const <DropdownMenuItem<String>>[
+                DropdownMenuItem<String>(value: '+', child: Text('बेरीज (+)')),
+                DropdownMenuItem<String>(value: '-', child: Text('वजाबाकी (-)')),
+                DropdownMenuItem<String>(value: '×', child: Text('गुणाकार (×)')),
+                DropdownMenuItem<String>(value: '÷', child: Text('भागाकार (÷)')),
               ],
               onChanged: (String? val) { if (val != null) setState(() { selectedOp = val; }); },
             ),

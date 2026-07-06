@@ -1,8 +1,43 @@
-- name: Build APK
+name: Build Math Elite APK
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # v3 वरून v4 केले
+
+      - name: Set up Java
+        uses: actions/setup-java@v4 # v3 वरून v4 केले
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create Android Folder
+        run: flutter create . --platforms=android
+
+      - name: Build APK
         run: flutter build apk --release
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4  # इथे v3 ऐवजी v4 केले आहे
+        uses: actions/upload-artifact@v4 # आधीच v4 केले आहे
         with:
           name: math-elite-apk
           path: build/app/outputs/flutter-apk/app-release.apk

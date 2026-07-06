@@ -14,6 +14,12 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
+class _ThemeColors {
+  static const Color background = Color(0xFF0F1016);
+  static const Color cardBg = Color(0xFF181A26);
+  static const Color accent = Color(0xFFFFB800);
+}
+
 class _GameScreenState extends State<GameScreen> {
   final GameLogic _logic = GameLogic();
   final TextEditingController _controller = TextEditingController();
@@ -104,56 +110,108 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String sign = widget.op;
     return Scaffold(
+      backgroundColor: _ThemeColors.background,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.home),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("Level $currentLevel / 100"),
+        title: Text(
+          "Level $currentLevel / 100", 
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             children: [
+              // Score & Timer Bar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${AppStrings.getLabel('score', widget.lang)}: $score", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber)),
-                  Text("${AppStrings.getLabel('time', widget.lang)}: ${timeLeft}s", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: timeLeft < 5 ? Colors.red : Colors.green)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: _ThemeColors.cardBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "${AppStrings.getLabel('score', widget.lang)}: $score", 
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: _ThemeColors.accent)
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: _ThemeColors.cardBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "${AppStrings.getLabel('time', widget.lang)}: ${timeLeft}s", 
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: timeLeft < 5 ? Colors.redAccent : Colors.greenAccent)
+                    ),
+                  ),
                 ],
               ),
               const Spacer(),
+              
+              // New Box Layout design exactly like Dashboard Grid Items
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                width: double.infinity,
+                padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.white10),
+                  color: _ThemeColors.cardBg,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    )
+                  ]
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text("$num1", style: const TextStyle(fontSize: 55, letterSpacing: 4, fontWeight: FontWeight.bold)),
                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(sign, style: const TextStyle(fontSize: 45, color: Colors.amber, fontWeight: FontWeight.bold)),
-                        const SizedBox(width: 20),
-                        Text("$num2", style: const TextStyle(fontSize: 55, letterSpacing: 4, fontWeight: FontWeight.bold)),
+                        Text(
+                          "$num1", 
+                          style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1)
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          widget.op, 
+                          style: const TextStyle(fontSize: 40, color: _ThemeColors.accent, fontWeight: FontWeight.bold)
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          "$num2", 
+                          style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1)
+                        ),
                       ],
                     ),
-                    const Divider(color: Colors.white, thickness: 3, height: 20),
-                    SizedBox(
-                      width: 200,
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: _ThemeColors.background,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _ThemeColors.accent.withOpacity(0.3), width: 1.5)
+                      ),
                       child: TextField(
                         controller: _controller,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.right,
-                        style: const TextStyle(fontSize: 45, color: Colors.amber, fontWeight: FontWeight.bold),
+                        keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: false),
+                        autofocus: true,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 36, color: _ThemeColors.accent, fontWeight: FontWeight.bold),
                         decoration: const InputDecoration(
                           hintText: "?",
                           hintStyle: TextStyle(color: Colors.white24),
@@ -165,30 +223,43 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ),
               const Spacer(),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _ThemeColors.accent,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 0,
+                  ),
+                  onPressed: () => _processAnswer(),
+                  child: Text(
+                    AppStrings.getLabel('submit', widget.lang), 
+                    style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)
+                  ),
                 ),
-                onPressed: () => _processAnswer(),
-                child: Text(AppStrings.getLabel('submit', widget.lang), style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 24),
+
+              // Bottom Navigation Controls
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, size: 35, color: Colors.white54),
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 24, color: Colors.white54),
                     onPressed: () => _navigateHistory(true),
                   ),
-                  TextButton.icon(
+                  TextButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.exit_to_app, color: Colors.redAccent),
-                    label: Text(AppStrings.getLabel('back_home', widget.lang), style: const TextStyle(color: Colors.redAccent, fontSize: 16)),
+                    child: Text(
+                      AppStrings.getLabel('back_home', widget.lang), 
+                      style: const TextStyle(color: Colors.redAccent, fontSize: 15, fontWeight: FontWeight.w600)
+                    ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 35, color: Colors.white54),
+                    icon: const Icon(Icons.arrow_forward_ios, size: 24, color: Colors.white54),
                     onPressed: () => _navigateHistory(false),
                   ),
                 ],
@@ -200,3 +271,4 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 }
+
